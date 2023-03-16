@@ -20,9 +20,6 @@ public class JWTUtil {
     @Value("${org.zerock.jwt.secret}")
     private String key;
 
-    public static final String EXPIRED = "Expired";
-
-    public static final String MALFORMED = "MalFormed";
 
     public String generateToken(Map<String, Object> valueMap, int min){
 
@@ -59,9 +56,9 @@ public class JWTUtil {
                     .parseClaimsJws(token) // 파싱 및 검증, 실패 시 에러
                     .getBody();
         }catch(MalformedJwtException malformedJwtException){
-            throw new CustomJWTException(MALFORMED);
+            throw new CustomJWTException("Malformed");
         }catch(ExpiredJwtException expiredJwtException){
-            throw new CustomJWTException(EXPIRED);
+            throw new CustomJWTException("Expired");
         }catch(InvalidClaimException invalidClaimException){
             throw new CustomJWTException("Invalid");
         }catch(JwtException jwtException){

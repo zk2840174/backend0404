@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.zerock.backend.dto.RefreshDTO;
+import org.zerock.backend.dto.TokenDTO;
 import org.zerock.backend.service.SocialLoginService;
 import org.zerock.backend.util.JWTUtil;
 import org.zerock.backend.util.exceptions.CustomJWTException;
@@ -27,7 +27,7 @@ public class LoginController {
     private final JWTUtil jwtUtil;
 
     @GetMapping("/kakao/login/")
-    public Map<String, String> getKakaoUserEmail(String authCode){
+    public TokenDTO getKakaoUserEmail(String authCode){
 
         String email = kakaoLoginService.getKakaoEmail(authCode);
 
@@ -43,14 +43,16 @@ public class LoginController {
 
         String refreshToken = jwtUtil.generateToken(claimMap, 60*24*7);
 
+        return TokenDTO.builder()
+                .email(email)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
 
-        return Map.of("email", email,
-                "accessToken", accessToken,
-                "refreshToken", refreshToken);
     }
 
     @PostMapping("/refreshJWT")
-    public Map<String, String> refreshJWT(@RequestBody RefreshDTO refreshDTO) {
+    public Map<String, String> refreshJWT(@RequestBody TokenDTO refreshDTO) {
 
         try {
             //condition
@@ -61,7 +63,7 @@ public class LoginController {
 
             //refresh token이 만료되었다면 그냥 새로 로그인을 요구
             if (expiredRefresh) {
-                return Map.of("result", "login");
+                return Map.of("result", "Login");
             }
 
             //access Token expired
@@ -83,7 +85,7 @@ public class LoginController {
                 return Map.of("result", "refreshed",
                         "email", refreshDTO.getEmail(),
                         "accessToken", jwtUtil.generateToken(claims, 1),
-                        "refreshToken", jwtUtil.generateToken(claims, 60 * 24 * 7));
+                        "refreshToken", jwtUtil.generateToken(claims, 60*24*7));
 
             }
         }catch(RuntimeException runtimeException){
@@ -111,7 +113,7 @@ public class LoginController {
             log.info("checkExpiredToken ");
             log.info(customJWTException);
 
-            if(customJWTException.getMessage().equals(JWTUtil.EXPIRED)) {
+            if(customJWTException.getMessage().equals("Expired")) {
                 expired = true;
             }
         }

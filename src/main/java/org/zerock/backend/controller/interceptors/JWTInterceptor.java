@@ -17,9 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JWTInterceptor implements HandlerInterceptor {
 
-
     private final JWTUtil jwtUtil;
-
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -59,10 +57,9 @@ public class JWTInterceptor implements HandlerInterceptor {
     private Map<String, Object> validateJWT(String jwtStr , HttpServletResponse response) throws CustomJWTException {
 
 
-        if(jwtStr == null) {
-            throw new CustomJWTException("Null");
+        if(jwtStr == null || jwtStr.length() < 8) {
+            throw new CustomJWTException("Null Token");
         }
-
         //Bearer 7
         String token = jwtStr.substring(7);
 

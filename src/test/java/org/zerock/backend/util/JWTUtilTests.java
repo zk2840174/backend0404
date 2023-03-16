@@ -20,7 +20,7 @@ public class JWTUtilTests {
 
         Map<String, Object> claimMap = Map.of("email", "testuser@aaa.com");
 
-        String jwtStr = jwtUtil.generateToken(claimMap, 10);
+        String jwtStr = jwtUtil.generateToken(claimMap, 60);
 
         log.info(jwtStr);
     }

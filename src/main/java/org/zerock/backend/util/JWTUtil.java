@@ -51,8 +51,9 @@ public class JWTUtil {
         Map<String, Object> claim = null;
 
         try {
-            claim = Jwts.parser()
+            claim = Jwts.parserBuilder()
                     .setSigningKey(key.getBytes()) // Set Key
+                    .build()
                     .parseClaimsJws(token) // 파싱 및 검증, 실패 시 에러
                     .getBody();
         }catch(MalformedJwtException malformedJwtException){

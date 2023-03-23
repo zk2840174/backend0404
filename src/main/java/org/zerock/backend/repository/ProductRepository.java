@@ -10,7 +10,7 @@ import org.zerock.backend.domain.Product;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
-    @Query("select p, pi from Product p left join p.imageList pi where pi.ord = 0")
+    @Query("select p, pi from Product p left join p.imageList pi where pi.ord = 0 or pi is null")
     Page<Object[]> listPage(Pageable pageable);
 
 

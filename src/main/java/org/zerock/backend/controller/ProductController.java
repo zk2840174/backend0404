@@ -2,12 +2,17 @@ package org.zerock.backend.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.zerock.backend.dto.PageRequestDTO;
 import org.zerock.backend.dto.PageResponseDTO;
 import org.zerock.backend.dto.ProductDTO;
+import org.zerock.backend.dto.ProductImageDTO;
+import org.zerock.backend.dto.upload.UploadResultDTO;
 import org.zerock.backend.service.ProductService;
+import org.zerock.backend.util.UploadUtil;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -19,6 +24,8 @@ public class ProductController {
 
     private final ProductService productService;
 
+    private final UploadUtil uploadUtil;
+
 
     @GetMapping("/list")
     public PageResponseDTO<ProductDTO> getList(PageRequestDTO pageRequestDTO){
@@ -26,9 +33,15 @@ public class ProductController {
         return productService.list(pageRequestDTO);
     }
 
-    @PostMapping
-    public Map<String, Long> register(@RequestBody ProductDTO productDTO){
+    @PostMapping(value ="" , consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Map<String, Long> register(ProductDTO productDTO){
         log.info("register.........................");
+
+        log.info(productDTO);
+
+        List<ProductImageDTO> imageDTOList = uploadUtil.upload(productDTO.getFiles());
+
+        productDTO.setProductImageDTOList(imageDTOList);
 
         log.info(productDTO);
 

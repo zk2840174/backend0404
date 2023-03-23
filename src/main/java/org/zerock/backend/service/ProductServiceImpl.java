@@ -41,12 +41,6 @@ public class ProductServiceImpl implements ProductService{
         log.info(product);
         log.info(product.getImageList());
 
-        int ord = 0;
-        for (ProductImage productImage : product.getImageList()) {
-
-            productImage.setOrd(ord++);
-        }
-
         Product result = productRepository.save(product);
 
         return result.getPno();
@@ -77,7 +71,7 @@ public class ProductServiceImpl implements ProductService{
 
         List<ProductDTO> productDTOList = result.getContent().stream().map(arr -> {
 
-            Product product = (Product)arr[0];
+            Product product = (Product) arr[0];
 
             ProductDTO productDTO = ProductDTO.builder()
                     .pno(product.getPno())
@@ -86,9 +80,11 @@ public class ProductServiceImpl implements ProductService{
                     .status(product.getStatus())
                     .build();
 
-            ProductImageDTO productImageDTO = modelMapper.map(arr[1], ProductImageDTO.class);
+            if (arr[1] != null) {
 
-            productDTO.getProductImageDTOList().add(productImageDTO);
+                ProductImageDTO productImageDTO = modelMapper.map(arr[1], ProductImageDTO.class);
+                productDTO.getProductImageDTOList().add(productImageDTO);
+            }
 
             return productDTO;
         }).collect(Collectors.toList());

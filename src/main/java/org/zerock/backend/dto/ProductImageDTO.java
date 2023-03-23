@@ -17,4 +17,9 @@ public class ProductImageDTO {
     private String fileName;
 
     private int ord;
+
+    public String getLink() {
+
+        return uuid+"_"+fileName;
+    }
 }

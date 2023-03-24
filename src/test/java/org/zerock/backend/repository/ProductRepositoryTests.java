@@ -13,6 +13,9 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.backend.domain.Product;
 import org.zerock.backend.domain.ProductImage;
+import org.zerock.backend.dto.PageRequestDTO;
+import org.zerock.backend.dto.PageResponseDTO;
+import org.zerock.backend.dto.ProductDTO;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -24,12 +27,10 @@ public class ProductRepositoryTests {
     @Autowired
     private ProductRepository productRepository;
 
-
     @Test
     public void testInsert() {
 
         for(int i = 0; i < 100; i++){
-
 
             Product product = Product.builder()
                     .pname("Product_" +i)
@@ -39,12 +40,12 @@ public class ProductRepositoryTests {
 
             product.addImage(ProductImage.builder()
                     .uuid(UUID.randomUUID().toString())
-                    .fileName(i+"_file1.jpg")
+                    .fileName(i + "file1.jpg")
                     .build());
 
             product.addImage(ProductImage.builder()
                     .uuid(UUID.randomUUID().toString())
-                    .fileName(i+"_file2.jpg")
+                    .fileName(i + "_file2.jpg")
                     .build());
 
             productRepository.save(product);
@@ -99,5 +100,57 @@ public class ProductRepositoryTests {
 
 
 
+    @Test
+    public void testSearch1() {
+
+        Pageable pageable = PageRequest.of(0,10);
+
+        Page<Product> result = productRepository.search1(pageable);
+
+        log.info(result);
+    }
+
+    @Test
+    public void testSearch2() {
+
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .page(1)
+                .size(10)
+                .typeStr("t")
+                .keyword("1")
+                .build();
+
+        Page<Product> result = productRepository.searchByTypes(pageRequestDTO);
+
+        log.info(result);
+
+        result.getContent().forEach(product -> {
+            log.info(product);
+        });
+    }
+
+
+    @Test
+    public void testSearchDTO() {
+
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .page(1)
+                .size(10)
+//                .typeStr("t")
+//                .keyword("1")
+                .build();
+
+        PageResponseDTO<ProductDTO> result = productRepository.searchDTOByTypes(pageRequestDTO);
+
+        log.info(result);
+
+        log.info("-------------------------");
+        result.getDtoList().forEach(productDTO -> {
+            log.info(productDTO);
+        });
+
+        log.info("================================");
+
+    }
 
 }

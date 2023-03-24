@@ -18,4 +18,17 @@ public class PageRequestDTO {
 
     @Builder.Default
     private int size = 10;
+
+    private String typeStr;
+    private String[] types;
+
+    private String keyword;
+
+    public String[] getTypes() {
+
+        if(typeStr == null) {
+            return null;
+        }
+        return typeStr.split("");
+    }
 }

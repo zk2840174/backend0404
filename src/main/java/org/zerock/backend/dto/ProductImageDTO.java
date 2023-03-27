@@ -22,4 +22,9 @@ public class ProductImageDTO {
 
         return uuid+"_"+fileName;
     }
+
+    public String getThumb() {
+
+        return "s_" + uuid+"_"+ fileName;
+    }
 }

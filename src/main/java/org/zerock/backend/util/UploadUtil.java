@@ -1,12 +1,14 @@
 package org.zerock.backend.util;
 
 import lombok.extern.log4j.Log4j2;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.zerock.backend.dto.ProductImageDTO;
 import org.zerock.backend.dto.upload.UploadResultDTO;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,9 +42,19 @@ public class UploadUtil {
             String uuid = UUID.randomUUID().toString();
 
             Path savePath = Paths.get(uploadPath, uuid + "_" + originalName);
-
             try {
                 multipartFile.transferTo(savePath);
+
+                //make thumbnail
+                if(multipartFile.getContentType().startsWith("image")){
+
+                    Path thumbnailPath = Paths.get(uploadPath, "s_"+uuid + "_" + originalName);
+
+                    Thumbnails.of(savePath.toFile())
+                            .size(100,100)
+                            .toFile(thumbnailPath.toFile());
+
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();

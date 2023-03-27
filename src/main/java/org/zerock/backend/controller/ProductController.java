@@ -30,7 +30,8 @@ public class ProductController {
     @GetMapping("/list")
     public PageResponseDTO<ProductDTO> getList(PageRequestDTO pageRequestDTO){
 
-        return productService.list(pageRequestDTO);
+        //return productService.list(pageRequestDTO);
+        return productService.listSearch(pageRequestDTO);
     }
 
     @PostMapping(value ="" , consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})

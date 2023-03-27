@@ -101,7 +101,7 @@ public class ProductSearchImpl extends QuerydslRepositorySupport  implements Pro
         JPQLQuery<Product> query = from(product);
         query.leftJoin(product.imageList, productImage);
 
-        query.where(productImage.ord.eq(1));
+        query.where(productImage.ord.eq(0));
 
         JPQLQuery<Tuple> tupleJPQLQuery = query.select(product, productImage);
 

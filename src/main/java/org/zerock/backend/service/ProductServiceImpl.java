@@ -97,6 +97,13 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public PageResponseDTO<ProductDTO> listSearch(PageRequestDTO pageRequestDTO) {
+
+        return productRepository.searchDTOByTypes(pageRequestDTO);
+
+    }
+
+    @Override
     public void modify(ProductDTO productDTO) {
 
         Optional<Product> result = productRepository.findById(productDTO.getPno());

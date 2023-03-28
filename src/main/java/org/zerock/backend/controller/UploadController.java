@@ -74,6 +74,13 @@ public class UploadController {
     public ResponseEntity<Resource> viewFileGET(@PathVariable String fileName){
 
         Resource resource = new FileSystemResource(uploadPath+ File.separator + fileName);
+
+        if(!resource.exists() ) {
+
+            resource = new FileSystemResource(uploadPath+ File.separator + "s_default.jpg");
+
+        }
+
         String resourceName = resource.getFilename();
         HttpHeaders headers = new HttpHeaders();
 

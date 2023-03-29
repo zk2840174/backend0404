@@ -103,6 +103,16 @@ public class ProductSearchImpl extends QuerydslRepositorySupport  implements Pro
 
         query.where(productImage.ord.eq(0));
 
+        if(types != null && keyword  != null){
+            for(String type: types){
+                switch (type){
+                    case "t":
+                        query.where(product.pname.contains(keyword));
+                        break;
+                }
+            }
+        }
+
         JPQLQuery<Tuple> tupleJPQLQuery = query.select(product, productImage);
 
 

@@ -99,6 +99,8 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public PageResponseDTO<ProductDTO> listSearch(PageRequestDTO pageRequestDTO) {
 
+        log.info("pageRequestDTO: " + pageRequestDTO);
+
         return productRepository.searchDTOByTypes(pageRequestDTO);
 
     }

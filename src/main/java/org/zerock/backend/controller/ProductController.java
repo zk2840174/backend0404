@@ -62,12 +62,16 @@ public class ProductController {
 
     }
 
-    @PutMapping("/{pno}")
-    public Map<String, String>  update( @PathVariable(name="pno")Long pno,  @RequestBody ProductDTO productDTO ){
+    @PutMapping(value = "/{pno}",  consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Map<String, String>  update( @PathVariable(name="pno")Long pno,  ProductDTO productDTO ){
 
         productDTO.setPno(pno);
 
         log.info("modify............." + productDTO);
+
+        List<ProductImageDTO> imageDTOList = uploadUtil.upload(productDTO.getFiles());
+
+        productDTO.setProductImageDTOList(imageDTOList);
 
         productService.modify(productDTO);
 

@@ -16,6 +16,7 @@ import org.zerock.backend.dto.PageResponseDTO;
 import org.zerock.backend.dto.ProductDTO;
 import org.zerock.backend.dto.ProductImageDTO;
 import org.zerock.backend.repository.ProductRepository;
+import org.zerock.backend.util.UploadUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,8 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
 
     private final ModelMapper modelMapper;
+
+    private final UploadUtil uploadUtil;
 
     @Override
     public Long register(ProductDTO productDTO) {
@@ -49,11 +52,23 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public ProductDTO get(Long pno) {
 
-        Optional<Product> result = productRepository.findById(pno);
+//        Optional<Product> result = productRepository.findById(pno);
+//
+//        Product product = result.orElseThrow();
+//
+//        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+//
+//        return productDTO;
 
-        Product product = result.orElseThrow();
+        Product product = productRepository.getOne(pno);
 
-        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+        ProductDTO productDTO =  modelMapper.map(product, ProductDTO.class);
+
+        productDTO.setProductImageDTOList(product.getImageList()
+                .stream()
+                .map(productImage -> modelMapper.map(productImage,ProductImageDTO.class))
+                .collect(Collectors.toList())
+        );
 
         return productDTO;
     }
@@ -108,15 +123,23 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public void modify(ProductDTO productDTO) {
 
-        Optional<Product> result = productRepository.findById(productDTO.getPno());
-
-        Product product = result.orElseThrow();
+        Product product = productRepository.getOne(productDTO.getPno());
 
         product.changeName(productDTO.getPname());
         product.setStatus(productDTO.getStatus());
         product.changePrice(productDTO.getPrice());
 
+        //delete old files
+        List<String> oldFileNames = product.getImageList()
+                .stream()
+                .map(productImage -> productImage.getUuid()+"_"+ productImage.getFileName())
+                        .collect(Collectors.toList());
+
+        uploadUtil.deleteFiles(oldFileNames);
+
+
         product.clearList();
+
 
         productDTO.getProductImageDTOList().forEach( productImageDTO -> {
 

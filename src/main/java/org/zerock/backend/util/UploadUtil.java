@@ -10,6 +10,7 @@ import org.zerock.backend.dto.upload.UploadResultDTO;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -23,6 +24,22 @@ public class UploadUtil {
 
     @Value("${org.zerock.upload.path}")// import 시에 springframework으로 시작하는 Value
     private String uploadPath;
+
+
+    public void deleteFiles(List<String> fileNames) {
+
+        fileNames.forEach(fileName -> {
+            try{
+
+                Files.delete(Paths.get(uploadPath, fileName));
+
+            }catch(Exception e){
+
+            }
+
+        });
+
+    }
 
     public List<ProductImageDTO>  upload(List<MultipartFile> files) {
 

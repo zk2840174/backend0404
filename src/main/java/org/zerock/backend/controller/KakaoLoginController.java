@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.zerock.backend.dto.TokenDTO;
+import org.zerock.backend.dto.MemberDTO;
 import org.zerock.backend.service.SocialLoginService;
 import org.zerock.backend.util.JWTUtil;
 import org.zerock.backend.util.exceptions.CustomJWTException;
@@ -18,41 +18,26 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @Log4j2
-public class LoginController {
+public class KakaoLoginController {
 
 
-    private final SocialLoginService kakaoLoginService;
+    private final SocialLoginService socialService;
 
 
     private final JWTUtil jwtUtil;
 
     @GetMapping("/kakao/login/")
-    public TokenDTO getKakaoUserEmail(String authCode){
-
-        String email = kakaoLoginService.getKakaoEmail(authCode);
-
-        log.info("-------------------------------");
-        log.info(email);
-
-        Map<String, Object> claimMap = Map.of("email", email);
-
-        //String accessToken = jwtUtil.generateToken(claimMap, 10);
-
-        String accessToken = jwtUtil.generateToken(claimMap, 1);
+    public MemberDTO getKakaoUserEmail(String authCode){
 
 
-        String refreshToken = jwtUtil.generateToken(claimMap, 60*24*7);
 
-        return TokenDTO.builder()
-                .email(email)
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+
+        return null;
 
     }
 
     @PostMapping("/refreshJWT")
-    public Map<String, String> refreshJWT(@RequestBody TokenDTO refreshDTO) {
+    public Map<String, String> refreshJWT(@RequestBody MemberDTO refreshDTO) {
 
         try {
             //condition

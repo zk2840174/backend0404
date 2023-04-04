@@ -21,4 +21,6 @@ public class MemberDTO {
 
     private String refreshToken;
 
+    private boolean social;
+
 }

@@ -55,37 +55,52 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     @Override
     public MemberDTO getKakaoEmail(String authCode) {
 
-        String accessToken = getAccessToken(authCode);
+        String kakaoAccessToken = getAccessToken(authCode);
 
         log.info("--------------------------------1");
-        log.info("access token: " + accessToken);
+        log.info("kakao access token: " + kakaoAccessToken);
 
-        String email = getEmailFromAccessToken(accessToken);
+        String email = getEmailFromAccessToken(kakaoAccessToken);
 
         MemberDTO memberDTO = checkMemberDatabase(email);
 
         log.info("USER EMAIL: " + email);
 
-        return null;
+        return memberDTO;
     }
 
     private MemberDTO checkMemberDatabase(String email) {
 
+        log.info("===================================");
+        log.info(email);
+
         Optional<Member> result = memberRepository.findById(email);
 
-        Member member = result.get();
+        Map<String, Object> valueMap = Map.of("email", email);
 
-        if(member != null){
+        String accessToken = jwtUtil.generateToken(valueMap, 1 );
+
+        String refreshToken = jwtUtil.generateToken(valueMap, 60* 24);
+
+
+        if(result.isPresent()){
+
+            Member member = result.get();
+            member.changeAccessToken(accessToken);
+            member.changeRefreshToken(refreshToken);
+
+            memberRepository.save(member);
+
             return modelMapper.map(member, MemberDTO.class);
         }
 
-        Map<String, Object> valueMap = Map.of("email", email);
         //not exists email
         Member newMember = Member.builder()
                 .email(email)
                 .pw(passwordUtil.generatePassword())
-                .accessToken(jwtUtil.generateToken(valueMap, 10 ))
+                .accessToken(jwtUtil.generateToken(valueMap, 1 ))
                 .refreshToken(jwtUtil.generateToken(valueMap, 60* 24))
+                .social(true)
                 .build();
 
         memberRepository.save(newMember);

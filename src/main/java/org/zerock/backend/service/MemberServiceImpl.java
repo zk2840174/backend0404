@@ -85,7 +85,7 @@ public class MemberServiceImpl implements MemberService{
         //makeTokens
         Map<String, Object> claims = Map.of("email", memberDTO.getEmail());
         //accessToken
-        String accessToken = jwtUtil.generateToken(claims, 10);
+        String accessToken = jwtUtil.generateToken(claims, 1);
         //refreshToken
         String refreshToken = jwtUtil.generateToken(claims, 60*24);
 

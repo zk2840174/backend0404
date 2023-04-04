@@ -2,7 +2,6 @@ package org.zerock.backend.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -10,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.zerock.backend.controller.interceptors.JWTInterceptor;
+
 import org.zerock.backend.formatters.LocalDateFormatter;
 import org.zerock.backend.util.JWTUtil;
 
@@ -34,7 +34,7 @@ public class CustomServletConfig implements WebMvcConfigurer {
 
         registry.addMapping("/**")
                 .allowedOrigins("*")
-                .allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE")
+                .allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .maxAge(300)
                 .allowedHeaders("Authorization", "Cache-Control", "Content-Type");
     }
@@ -42,7 +42,8 @@ public class CustomServletConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-        registry.addInterceptor(new JWTInterceptor(jwtUtil)).addPathPatterns("/api1/**");
+        registry.addInterceptor(new JWTInterceptor(jwtUtil)).addPathPatterns("/products/**");
+
     }
 }
 

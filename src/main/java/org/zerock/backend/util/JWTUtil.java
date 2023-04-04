@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.zerock.backend.util.exceptions.CustomJWTException;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,14 +50,23 @@ public class JWTUtil {
 
     public Map<String, Object> validateToken(String token) {
 
+
         Map<String, Object> claim = null;
 
         try {
+
+
             claim = Jwts.parserBuilder()
                     .setSigningKey(key.getBytes()) // Set Key
                     .build()
                     .parseClaimsJws(token) // 파싱 및 검증, 실패 시 에러
                     .getBody();
+
+            log.info("EXP--------------------");
+            LocalDateTime time = LocalDateTime.ofEpochSecond((int)claim.get("exp"), 0, ZoneOffset.ofHours(9));
+
+            log.info(time);
+
         }catch(MalformedJwtException malformedJwtException){
             throw new CustomJWTException("Malformed");
         }catch(ExpiredJwtException expiredJwtException){

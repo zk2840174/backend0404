@@ -24,6 +24,9 @@ public class Member {
 
     private String refreshToken;
 
+    @Builder.Default
+    private boolean social = false;
+
     public void changeAccessToken(String accessToken){
         this.accessToken = accessToken;
     }
